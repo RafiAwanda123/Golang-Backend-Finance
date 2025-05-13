@@ -11,7 +11,6 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// GetAllFinance - Get all financial records for current user
 func GetAllFinance(c *gin.Context) {
 	userID := c.MustGet("user_id").(int)
 
@@ -24,7 +23,6 @@ func GetAllFinance(c *gin.Context) {
 	utils.APISuccess(c, http.StatusOK, records)
 }
 
-// GetFinanceInfo - Get metadata keuangan user
 func GetFinanceInfo(c *gin.Context) {
 	userID := c.MustGet("user_id").(int)
 
@@ -38,7 +36,6 @@ func GetFinanceInfo(c *gin.Context) {
 	utils.APISuccess(c, http.StatusOK, metadata)
 }
 
-// GetFinanceByID - Get single record by ID
 func GetFinanceByID(c *gin.Context) {
 	userID := c.MustGet("user_id").(int)
 	recordID := c.Param("id")
@@ -56,7 +53,6 @@ func GetFinanceByID(c *gin.Context) {
 	utils.APISuccess(c, http.StatusOK, record)
 }
 
-// AddFinance - Create new financial record
 func AddFinance(c *gin.Context) {
 	userID := c.MustGet("user_id").(int)
 
@@ -79,7 +75,6 @@ func AddFinance(c *gin.Context) {
 	})
 }
 
-// UpdateFinance - Update existing record
 func UpdateFinance(c *gin.Context) {
 	userID := c.MustGet("user_id").(int)
 
@@ -103,7 +98,6 @@ func UpdateFinance(c *gin.Context) {
 	utils.APISuccess(c, http.StatusOK, "Data berhasil diperbarui")
 }
 
-// DeleteFinance - Delete record
 func DeleteFinance(c *gin.Context) {
 	userID := c.MustGet("user_id").(int)
 	recordID := c.Query("id")

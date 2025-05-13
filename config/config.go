@@ -30,7 +30,7 @@ func LoadConfig() (*AppConfig, error) {
 	// Validasi variabel wajib
 	required := map[string]string{
 		"DB_USER":     getEnv("DB_USER", ""),
-		"DB_PASSWORD": getEnv("DB_PASS", ""), // <-- Tambahkan ini
+		"DB_PASSWORD": getEnv("DB_PASS", ""),
 		"DB_NAME":     getEnv("DB_NAME", ""),
 	}
 
@@ -41,7 +41,7 @@ func LoadConfig() (*AppConfig, error) {
 	}
 
 	cfg.DBUser = required["DB_USER"]
-	cfg.DBPassword = required["DB_PASSWORD"] // <-- Simpan ke config
+	cfg.DBPassword = required["DB_PASSWORD"]
 	cfg.DBName = required["DB_NAME"]
 
 	// Parse JWT expiration

@@ -78,6 +78,6 @@ func Login(c *gin.Context) {
 
 	utils.APISuccess(c, http.StatusOK, gin.H{
 		"token":      token,
-		"expires_in": 7200, // 2 jam dalam detik
+		"expires_in": 7200,
 	})
 }

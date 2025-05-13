@@ -36,5 +36,5 @@ func main() {
 	}
 
 	fmt.Printf("Server berjalan di http://localhost:%d\n", port)
-	router.Run(fmt.Sprintf("localhost:%d", port)) // <-- Revisi di sini
+	router.Run(fmt.Sprintf("localhost:%d", port))
 }
