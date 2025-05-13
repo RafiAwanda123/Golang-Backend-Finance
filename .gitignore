@@ -1,0 +1,9 @@
+.env
+
+Finance-UMKM.exe
+
+go.mod
+
+go.sum
+
+./database/migrations.sql
