@@ -6,8 +6,11 @@ import (
 	"github.com/RafiAwanda123/Finance-UMKM/database"
 	"github.com/RafiAwanda123/Finance-UMKM/models"
 	"github.com/RafiAwanda123/Finance-UMKM/utils"
-
 	"github.com/gin-gonic/gin"
+
+	"errors"
+
+	"gorm.io/gorm"
 )
 
 type AuthInput struct {
@@ -22,20 +25,22 @@ func Signup(c *gin.Context) {
 		return
 	}
 
-	// Cek username sudah ada
-	if _, err := models.GetUserByUsername(database.DB, input.Username); err == nil {
+	// Revisi: Gunakan blank identifier jika tidak membutuhkan return value
+	_, err := models.GetUserByUsername(database.DB, input.Username)
+	if err == nil { // Jika tidak ada error = username sudah ada
 		utils.APIError(c, http.StatusConflict, "Username sudah terdaftar")
+		return
+	} else if !errors.Is(err, gorm.ErrRecordNotFound) { // Jika error selain "not found"
+		utils.APIError(c, http.StatusInternalServerError, "Gagal memeriksa username")
 		return
 	}
 
-	// Hash password
 	hashedPassword, err := utils.HashPassword(input.Password)
 	if err != nil {
 		utils.APIError(c, http.StatusInternalServerError, "Gagal memproses password")
 		return
 	}
 
-	// Simpan user baru
 	newUser := models.User{
 		Username:     input.Username,
 		PasswordHash: hashedPassword,
@@ -46,7 +51,10 @@ func Signup(c *gin.Context) {
 		return
 	}
 
-	utils.APISuccess(c, http.StatusCreated, "User berhasil dibuat")
+	utils.APISuccess(c, http.StatusCreated, gin.H{
+		"message":  "User berhasil dibuat",
+		"username": newUser.Username,
+	})
 }
 
 func Login(c *gin.Context) {
@@ -56,20 +64,21 @@ func Login(c *gin.Context) {
 		return
 	}
 
-	// Cari user
 	user, err := models.GetUserByUsername(database.DB, input.Username)
 	if err != nil {
-		utils.APIError(c, http.StatusUnauthorized, "Username/password salah")
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			utils.APIError(c, http.StatusUnauthorized, "Username tidak terdaftar")
+		} else {
+			utils.APIError(c, http.StatusInternalServerError, "Gagal memeriksa user")
+		}
 		return
 	}
 
-	// Verifikasi password
 	if !utils.CheckPasswordHash(input.Password, user.PasswordHash) {
-		utils.APIError(c, http.StatusUnauthorized, "Username/password salah")
+		utils.APIError(c, http.StatusUnauthorized, "Password salah")
 		return
 	}
 
-	// Generate JWT 2 jam
 	token, err := utils.GenerateJWT(user.ID)
 	if err != nil {
 		utils.APIError(c, http.StatusInternalServerError, "Gagal membuat token")
@@ -79,5 +88,6 @@ func Login(c *gin.Context) {
 	utils.APISuccess(c, http.StatusOK, gin.H{
 		"token":      token,
 		"expires_in": 7200,
+		"username":   user.Username,
 	})
 }
