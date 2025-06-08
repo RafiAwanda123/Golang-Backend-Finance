@@ -8,4 +8,4 @@ go.sum
 
 ./database/migrations.sql
 
-./k8s
+k8s/
