@@ -7,3 +7,5 @@ go.mod
 go.sum
 
 ./database/migrations.sql
+
+./k8s
